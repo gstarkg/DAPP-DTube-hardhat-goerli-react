@@ -5,7 +5,7 @@
 ## 一个去中心化的视频分享平台
 
 步骤1:选择想要上传的视频
-![image]()
+![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-1.png)
 
 步骤2:确认交易，视频将会存在IPFS服务器上，没有人可以删除你的视频
-![image]()
+![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-2.png)
