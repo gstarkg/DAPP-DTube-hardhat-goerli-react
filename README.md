@@ -4,6 +4,7 @@
 
 ## 一个去中心化的视频分享平台
 ![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/1.png)
+***
 
 步骤1:选择想要上传的视频
 ![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-1.png)
