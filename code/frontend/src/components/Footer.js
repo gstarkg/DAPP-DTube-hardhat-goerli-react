@@ -7,7 +7,7 @@ export default function Footer() {
             <section className="content-container">
                 <div className="text-center p-5">
                     <a 
-                        href="https://github.com/gstarkg?tab=repositories"
+                        href="https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
