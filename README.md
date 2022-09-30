@@ -2,6 +2,8 @@
 
 使用[Vercel](https://vercel.com/dashboard)部署在[这里](https://dapp-dt-ube-hardhat-goerli-react-frontend-dnjr.vercel.app/)
 
+增加上传图片功能
+
 ## 一个去中心化的视频分享平台
 ![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/1.png)
 ***
