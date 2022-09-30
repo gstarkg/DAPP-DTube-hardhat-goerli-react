@@ -14,3 +14,6 @@ main()
     console.error(error);
     process.exit(1);
   })
+
+// https://goerli.etherscan.io/address/0x9F4aba259F3d188401eD777b7Ec806EaB2ad0C73
+// https://goerli.etherscan.io/address/0x245ABE971741E730850Ec8B3E054Cd83b8cA717f
