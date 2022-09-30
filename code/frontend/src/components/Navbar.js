@@ -6,6 +6,11 @@ class Navbar extends Component {
     render() {
         return (
             <nav className="navbar navbar-dark fixed-top bg-white flex-md-nowrap p-1 shadow font-monospace">
+                <div>
+                    <li onClick={() => this.props.showSubTap("image")}>image</li>
+                    <li onClick={() => this.props.showSubTap("video")}>video</li>
+                </div>
+
                 <div className="px-5">
                     <a 
                         className="navbar-brand col-sm-3 col-md-2 mr-0" 

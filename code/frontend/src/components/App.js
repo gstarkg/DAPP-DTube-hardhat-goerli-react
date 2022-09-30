@@ -4,7 +4,8 @@ import DTube from "../abis/DTube.json";
 import Web3 from "web3";
 import Navbar from './Navbar';
 import Footer from './Footer';
-import Main from './Main';
+import ShareVideo from './share_video';
+import ShareImage from './share_image';
 import { Web3Storage } from "web3.storage";
 // import 'dotenv/config';
 
@@ -26,8 +27,10 @@ class App extends Component {
       });
     } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
+      // this.setState({ loading: false });
     } else {
       window.alert("请安装MetaMask！")
+      // this.setState({ loading: false });
     }
   }
 
@@ -38,24 +41,41 @@ class App extends Component {
     this.setState({account: accounts[0]});
     // Network ID
     const networkId = await web3.eth.net.getId();
-    const dtube = new web3.eth.Contract(DTube.abi, "0x9F4aba259F3d188401eD777b7Ec806EaB2ad0C73");
-      this.setState({ dtube });
-      const videosCount = await dtube.methods.videoCount().call();
-      this.setState({ videosCount });
-      // Load videos, sort by newest
-      for (var i = videosCount; i >= 1; i--) {
-        const video = await dtube.methods.videos(i).call();
-        this.setState({
-          videos: [...this.state.videos, video],
-        });
-      }
-      // Set latest video with title to view as default
-      const latest = await dtube.methods.videos(videosCount).call();
+    // 部署新的合约后需要改这里!!!!
+    const dtube = new web3.eth.Contract(DTube.abi, "0x245ABE971741E730850Ec8B3E054Cd83b8cA717f");
+    this.setState({ dtube });
+    const videosCount = await dtube.methods.videoCount().call();
+    const imagesCount = await dtube.methods.imageCount().call();
+    this.setState({ videosCount });
+    this.setState({ imagesCount });
+    // Load videos, sort by newest
+    for (var i = videosCount; i >= 1; i--) {
+      const video = await dtube.methods.videos(i).call();
       this.setState({
-        currentHash: latest.videoIpfsHash,
-        currentTitle: latest.title,
+        videos: [...this.state.videos, video],
       });
-      this.setState({ loading: false });
+    }
+    // Load images, sort by newest
+    for (var i = imagesCount; i >= 1; i--) {
+      const image = await dtube.methods.images(i).call();
+      this.setState({
+        images: [...this.state.images, image],
+      })
+    }
+    // Set latest video with title to view as default
+    const latestVideo = await dtube.methods.videos(videosCount).call();
+    this.setState({
+      currentVideoHash: latestVideo.videoIpfsHash,
+      currentVideoTitle: latestVideo.title,
+    });
+    // Set latest image with title to view as default
+    const latestImage = await dtube.methods.images(imagesCount).call();
+    this.setState({
+      currentImageHash: latestImage.imageIpfsHash,
+      currentImageTitle: latestImage.title,
+    })
+
+    this.setState({ loading: false });
     // if (networkData) {
     //   const dtube = new web3.eth.Contract(DTube.abi, networkData.address);
     //   this.setState({ dtube });
@@ -91,7 +111,7 @@ class App extends Component {
     const videoFile = this.state.file;
     // adding file to the IPFS
     const cid = await client.put(videoFile.files, {wrapWithDirectory: false});
-    this.setState({ loading: true});
+    this.setState({ loading: true });
     this.state.dtube.methods
       .uploadVideo(cid, title)
       .send({ from: this.state.account })
@@ -100,9 +120,62 @@ class App extends Component {
       });
   }
 
+  async uploadImage(title) {
+    const imageFile = this.state.file;
+    const cid = await client.put(imageFile.files, {wrapWithDirectory: false});
+    this.setState({ loading: true });
+    this.state.dtube.methods
+      .uploadImage(cid, title)
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+      })
+  }
+
   changeVideo = (hash, title) => {
-    this.setState({currentHash: hash});
-    this.setState({currentTitle: title});
+    this.setState({currentVideoHash: hash});
+    this.setState({currentVideoTitle: title});
+  }
+
+  changeImage = (hash, title) => {
+    this.setState({ currentImageHash: hash });
+    this.setState({ currentImageTitle: title });
+  }
+
+  showSubTap = (name) => {
+    this.setState({subTab: name});
+  }
+
+  subTapComponent = () => {
+    switch(this.state.subTab) {
+      case 'image': return <ShareImage 
+                              images={this.state.images}
+                              account={this.state.account}
+                              uploadImage={this.uploadImage}
+                              captureFile={this.captureFile}
+                              changeImage={this.changeImage}
+                              currentImageHash={this.state.currentImageHash}
+                              currentImageTitle={this.state.currentImageTitle}
+                              />
+      case 'video': return <ShareVideo
+                              videos={this.state.videos}
+                              account={this.state.account}
+                              uploadVideo={this.uploadVideo}
+                              captureFile={this.captureFile}
+                              changeVideo={this.changeVideo}
+                              currentVideoHash={this.state.currentVideoHash}
+                              currentVideoTitle={this.state.currentVideoTitle}
+                              />
+      default: return <ShareImage 
+                        images={this.state.images}
+                        account={this.state.account}
+                        uploadImage={this.uploadImage}
+                        captureFile={this.captureFile}
+                        changeImage={this.changeImage}
+                        currentImageHash={this.state.currentImageHash}
+                        currentImageTitle={this.state.currentImageTitle}
+                        />
+    }
   }
 
   constructor(props) {
@@ -111,37 +184,46 @@ class App extends Component {
       file: null,
       account: "",
       dtube: null,
-      videos: [],
       loading: true,
-      currentHash: null,
-      currentTitle: null,
+
+      videos: [],
+      currentVideoHash: null,
+      currentVideoTitle: null,
+
+      images: [],
+      currentImageHash: null,
+      currentImageTitle: null,
+
+      subTab: "",
     };
 
     this.uploadVideo = this.uploadVideo.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
+
     this.captureFile = this.captureFile.bind(this);
+
     this.changeVideo = this.changeVideo.bind(this);
+    this.changeImage = this.changeImage.bind(this);
+
+    this.showSubTap = this.showSubTap.bind(this);
 
   }
 
   render() {
     return (
       <div>
-        <Navbar account={this.state.account} />
+        <Navbar 
+          account={this.state.account}
+          showSubTap={this.showSubTap}
+         />
+        
         {this.state.loading ? (
           <div>
             <p>Loading...</p>
           </div>
         ) : (
           <>
-            <Main
-              videos={this.state.videos}
-              account={this.state.account}
-              uploadVideo={this.uploadVideo}
-              captureFile={this.captureFile}
-              changeVideo={this.changeVideo}
-              currentHash={this.state.currentHash}
-              currentTitle={this.state.currentTitle}
-             />
+            {this.subTapComponent()}
             <Footer />
           </>
         )}

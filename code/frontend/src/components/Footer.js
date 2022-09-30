@@ -17,7 +17,7 @@ export default function Footer() {
                     <br />
                     <span className="text-secondary">
                         <i>
-                            分享你的视频
+                            分享你的世界
                         </i>
                     </span>
                 </div>
