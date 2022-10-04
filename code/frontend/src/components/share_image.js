@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import Web3 from "web3";
 
 class ShareImage extends Component {
     render() {
@@ -41,6 +42,26 @@ class ShareImage extends Component {
                                         rel="nooperner noreferrer"
                                         >{`https://w3s.link/ipfs/${this.props.currentImageHash}`}</a>
                                 </p>
+                                <form
+                                    onSubmit={(event) => {
+                                        event.preventDefault();
+                                        this.props.sendEthToAuthor(
+                                            this.props.currentImageAuthor, 
+                                            Web3.utils.toWei(this.sendEthToAuthorInput.value, 'ether')
+                                        );
+                                    }}
+                                >
+                                    <input 
+                                        id="sendEthToAuthorInput" 
+                                        type="text" 
+                                        ref={(input) => {
+                                            this.sendEthToAuthorInput = input;
+                                        }}
+                                        placeholder="转账金额 ETH"></input>
+                                    <button className="btn border border-dark btn-primary btn-block btn-sm">
+                                            发送
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

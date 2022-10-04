@@ -42,7 +42,7 @@ class App extends Component {
     // Network ID
     const networkId = await web3.eth.net.getId();
     // 部署新的合约后需要改这里!!!!
-    const dtube = new web3.eth.Contract(DTube.abi, "0x245ABE971741E730850Ec8B3E054Cd83b8cA717f");
+    const dtube = new web3.eth.Contract(DTube.abi, "0xb7CC15bf4Ae2cE8C4E4935bEEf4bf2dA4D2ea0F1");
     this.setState({ dtube });
     const videosCount = await dtube.methods.videoCount().call();
     const imagesCount = await dtube.methods.imageCount().call();
@@ -67,12 +67,14 @@ class App extends Component {
     this.setState({
       currentVideoHash: latestVideo.videoIpfsHash,
       currentVideoTitle: latestVideo.title,
+      currentVideoAuthor: latestVideo.author,
     });
     // Set latest image with title to view as default
     const latestImage = await dtube.methods.images(imagesCount).call();
     this.setState({
       currentImageHash: latestImage.imageIpfsHash,
       currentImageTitle: latestImage.title,
+      currentImageAuthor: latestImage.author,
     })
 
     this.setState({ loading: false });
@@ -132,14 +134,26 @@ class App extends Component {
       })
   }
 
-  changeVideo = (hash, title) => {
-    this.setState({currentVideoHash: hash});
-    this.setState({currentVideoTitle: title});
+  async sendEthToAuthor(author, amount) {
+    this.setState({ loading: true });
+    this.state.dtube.methods
+      .sendEthToAuthor(author)
+      .send({from: this.state.account, value: amount})
+      .on("transactionHash", (hash) => {
+        this.setState({ loading: false });
+      })
   }
 
-  changeImage = (hash, title) => {
+  changeVideo = (hash, title, author) => {
+    this.setState({ currentVideoHash: hash });
+    this.setState({ currentVideoTitle: title });
+    this.setState({ currentVideoAuthor: author});
+  }
+
+  changeImage = (hash, title, author) => {
     this.setState({ currentImageHash: hash });
     this.setState({ currentImageTitle: title });
+    this.setState({ currentImageAuthor: author});
   }
 
   showSubTap = (name) => {
@@ -156,6 +170,8 @@ class App extends Component {
                               changeImage={this.changeImage}
                               currentImageHash={this.state.currentImageHash}
                               currentImageTitle={this.state.currentImageTitle}
+                              currentImageAuthor={this.state.currentImageAuthor}
+                              sendEthToAuthor={this.sendEthToAuthor}
                               />
       case 'video': return <ShareVideo
                               videos={this.state.videos}
@@ -165,6 +181,8 @@ class App extends Component {
                               changeVideo={this.changeVideo}
                               currentVideoHash={this.state.currentVideoHash}
                               currentVideoTitle={this.state.currentVideoTitle}
+                              currentVideoAuthor={this.state.currentVideoAuthor}
+                              sendEthToAuthor={this.sendEthToAuthor}
                               />
       default: return <ShareImage 
                         images={this.state.images}
@@ -174,6 +192,8 @@ class App extends Component {
                         changeImage={this.changeImage}
                         currentImageHash={this.state.currentImageHash}
                         currentImageTitle={this.state.currentImageTitle}
+                        currentImageAuthor={this.state.currentImageAuthor}
+                        sendEthToAuthor={this.sendEthToAuthor}
                         />
     }
   }
@@ -189,10 +209,12 @@ class App extends Component {
       videos: [],
       currentVideoHash: null,
       currentVideoTitle: null,
+      currentVideoAuthor: null,
 
       images: [],
       currentImageHash: null,
       currentImageTitle: null,
+      currentImageAuthor: null,
 
       subTab: "",
     };
@@ -204,6 +226,8 @@ class App extends Component {
 
     this.changeVideo = this.changeVideo.bind(this);
     this.changeImage = this.changeImage.bind(this);
+
+    this.sendEthToAuthor = this.sendEthToAuthor.bind(this);
 
     this.showSubTap = this.showSubTap.bind(this);
 
@@ -219,7 +243,12 @@ class App extends Component {
         
         {this.state.loading ? (
           <div>
+            <br></br>
+            &nbsp;
+            <br></br>
+            <br></br>
             <p>Loading...</p>
+            <a href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn'>请安装MetaMask!</a>
           </div>
         ) : (
           <>

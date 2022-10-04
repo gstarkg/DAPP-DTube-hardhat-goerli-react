@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import Web3 from "web3";
 
 class ShareVideo extends Component {
     render() {
@@ -41,6 +42,27 @@ class ShareVideo extends Component {
                                         rel="nooperner noreferrer"
                                         >{`https://w3s.link/ipfs/${this.props.currentVideoHash}`}</a>
                                 </p>
+                                <form
+                                    onSubmit={(event) => {
+                                        event.preventDefault();
+                                        console.log(this.sendEthToAuthorInput.value);
+                                        this.props.sendEthToAuthor(
+                                            this.props.currentVideoAuthor, 
+                                            Web3.utils.toWei(this.sendEthToAuthorInput.value, 'ether')
+                                        );
+                                    }}
+                                >
+                                    <input 
+                                        id="sendEthToAuthorInput" 
+                                        type="text" 
+                                        ref={(input) => {
+                                            this.sendEthToAuthorInput = input;
+                                        }}
+                                        placeholder="转账金额 ETH"></input>
+                                    <button className="btn border border-dark btn-primary btn-block btn-sm">
+                                            发送
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
