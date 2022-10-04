@@ -13,3 +13,9 @@
 
 步骤2:确认交易，视频将会存在IPFS服务器上，没有人可以删除你的视频
 ![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-2.png)
+
+增加功能：用户可以对喜欢的作品的分享者进行以太坊转账
+
+步骤3：选择你想打赏的作品，输入大赏金额，单位为以太。对应的以太将会转给作品的作者。
+![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-3.png)
+![image](https://github.com/gstarkg/DAPP-DTube-hardhat-goerli-react/blob/main/images/step-3_1.png)
