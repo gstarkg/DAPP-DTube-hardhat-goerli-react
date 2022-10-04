@@ -36,6 +36,8 @@ contract DTube {
         address author
     );
 
+    event SendEthToAuthor(address receiver, address sender, uint256 amount);
+
     constructor() public {}
 
     function uploadVideo(string memory _videoIpfsHash, string memory _title)
@@ -72,5 +74,14 @@ contract DTube {
         );
 
         emit ImageUploaded(imageCount, _imageIpfsHash, _title, msg.sender);
+    }
+
+    // sendEthToAuthor() 向作品的作者发送指定eth
+    function sendEthToAuthor(address payable _to) public payable {
+        require(_to != address(0));
+
+        _to.transfer(msg.value);
+
+        emit SendEthToAuthor(_to, msg.sender, msg.value);
     }
 }

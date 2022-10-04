@@ -35,6 +35,41 @@
       "artifacts": [
         "DTube"
       ]
+    },
+    "/Users/shukai/code/DApp/dtube_goerli_V0P1/contracts/DTube.sol": {
+      "lastModificationDate": 1664891566382,
+      "contentHash": "6075785fbe5b2884b9624451e7bac5c1",
+      "sourceName": "contracts/DTube.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "DTube"
+      ]
     }
   }
 }
